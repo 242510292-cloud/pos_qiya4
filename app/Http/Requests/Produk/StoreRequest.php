@@ -21,32 +21,37 @@ class StoreRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-{
-    return [
-        'name' => 'required',
-        'jenis' => 'required|string|max:100',
-        'purchase_price' => 'required|numeric',
-        'selling_price' => 'required|numeric',
-        'stock' => 'required|integer',
-        'foto' => 'nullable|image',
-    ];
-}
+    {
+        return [
+            'name' => 'required',
+            'jenis_produk_id' => 'required|exists:jenis_produks,id',
+            'purchase_price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
+            'stock' => 'required|integer',
+            'foto' => 'nullable|image',
+        ];
+    }
 
     public function messages(): array
     {
         return [
-            'foto.image'    => 'File yang diupload harus berupa gambar.',
-            'foto.mimes'    => 'Extensi gambar harus JPG, JPEG, PNG.',
-            'foto.max'      => 'Maxsimal ukuran gambar 2MB.',
+            'foto.image' => 'File yang diupload harus berupa gambar.',
+            'foto.mimes' => 'Extensi gambar harus JPG, JPEG, PNG.',
+            'foto.max' => 'Maxsimal ukuran gambar 2MB.',
+
             'name.required' => 'Nama wajib diisi.',
-            'email.email'   => 'Format email tidak valid.',
+
+            'jenis_produk_id.required' => 'Jenis produk wajib dipilih.',
+            'jenis_produk_id.exists' => 'Jenis produk yang dipilih tidak valid.',
+
             'purchase_price.required' => 'Purchase price wajib diisi.',
-            'purchase_price.integer'  => 'Purchase price harus diisi bilangan bulat.',
-            'selling_price.required'  => 'Selling price wajib diisi.',
-            'selling_price.integer'   => 'Selling price harus diisi bilangan bulat.',
+            'purchase_price.integer' => 'Purchase price harus diisi bilangan bulat.',
+
+            'selling_price.required' => 'Selling price wajib diisi.',
+            'selling_price.integer' => 'Selling price harus diisi bilangan bulat.',
+
             'stock.required' => 'Stock wajib diisi.',
             'stock.integer' => 'Stock harus diisi angka.',
         ];
     }
 }
-

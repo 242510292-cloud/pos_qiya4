@@ -6,6 +6,7 @@ use App\Http\Requests\Produk\StoreRequest;
 use App\Http\Requests\Produk\UpdateRequest;
 use App\Http\Requests\SearchRequest;
 use App\Models\Produk;
+use App\Models\JenisProduk;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -39,7 +40,6 @@ class ProdukController extends Controller
         return view('produk.index', compact('products'));
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
@@ -47,9 +47,10 @@ class ProdukController extends Controller
     {
         $this->authorize('create', Produk::class);
 
-        return view('produk.create');
-    }
+        $jenisProduks = JenisProduk::orderBy('nama_jenis')->get();
 
+        return view('produk.create', compact('jenisProduks'));
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -60,42 +61,36 @@ class ProdukController extends Controller
 
         $dataReq = $request->validated();
 
-
         $data = [
-            'user_id'    => Auth::id(),
-            'nama'       => $dataReq['name'],
-            'jenis'      => $dataReq['jenis'],
-            'harga_beli' => $dataReq['purchase_price'],
-            'harga_jual' => $dataReq['selling_price'],
-            'stok'       => $dataReq['stock'],
+            'user_id'          => Auth::id(),
+            'nama'             => $dataReq['name'],
+            'jenis_produk_id'  => $dataReq['jenis_produk_id'],
+            'harga_beli'       => $dataReq['purchase_price'],
+            'harga_jual'       => $dataReq['selling_price'],
+            'stok'             => $dataReq['stock'],
         ];
-
 
         if ($request->hasFile('foto')) {
 
             $data['foto'] = $request
                 ->file('foto')
                 ->store('products', 'public');
-
         }
 
-
         Produk::create($data);
-
 
         return redirect()
             ->route('produk.index')
             ->with('success', 'Produk berhasil ditambahkan.');
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(Produk $produk)
-{
-    return view('produk.show', compact('produk'));
-}
+    {
+        return view('produk.show', compact('produk'));
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -104,9 +99,10 @@ class ProdukController extends Controller
     {
         $this->authorize('update', $produk);
 
-        return view('produk.edit', compact('produk'));
-    }
+        $jenisProduks = JenisProduk::orderBy('nama_jenis')->get();
 
+        return view('produk.edit', compact('produk', 'jenisProduks'));
+    }
 
     /**
      * Update the specified resource in storage.
@@ -115,51 +111,37 @@ class ProdukController extends Controller
     {
         $this->authorize('update', $produk);
 
-
         $dataReq = $request->validated();
 
-
         $data = [
-            'user_id'    => Auth::id(),
-            'nama'       => $dataReq['name'],
-            'jenis'      => $dataReq['jenis'],
-            'harga_beli' => $dataReq['purchase_price'],
-            'harga_jual' => $dataReq['selling_price'],
-            'stok'       => $dataReq['stock'],
+            'user_id'          => Auth::id(),
+            'nama'             => $dataReq['name'],
+            'jenis_produk_id'  => $dataReq['jenis_produk_id'],
+            'harga_beli'       => $dataReq['purchase_price'],
+            'harga_jual'       => $dataReq['selling_price'],
+            'stok'             => $dataReq['stock'],
         ];
 
-
-
         if ($request->hasFile('foto')) {
-
 
             if (
                 $produk->foto &&
                 Storage::disk('public')->exists($produk->foto)
             ) {
-
                 Storage::disk('public')->delete($produk->foto);
-
             }
-
 
             $data['foto'] = $request
                 ->file('foto')
                 ->store('products', 'public');
-
         }
 
-
-
         $produk->update($data);
-
-
 
         return redirect()
             ->route('produk.index')
             ->with('success', 'Produk berhasil diupdate.');
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -168,16 +150,11 @@ class ProdukController extends Controller
     {
         $this->authorize('delete', $produk);
 
-
         if ($produk->foto) {
-
             Storage::disk('public')->delete($produk->foto);
-
         }
 
-
         $produk->delete();
-
 
         return redirect()
             ->route('produk.index')

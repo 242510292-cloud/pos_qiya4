@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\JenisProduk;
 
 class Produk extends Model
 {
@@ -12,23 +13,16 @@ class Produk extends Model
     protected $table = 'produk';
 
     protected $fillable = [
-        'user_id',
-        'foto',
         'nama',
-        'jenis',
         'harga_beli',
         'harga_jual',
-        'stok'
-
+        'stok',
+        'jenis_produk_id',
+        'foto',
     ];
 
-      public function user()
+    public function jenisProduk()
     {
-        return $this->belongsTo(User::class, 'user_id');
-    }
-
-     public function itemPenjualan()
-    {
-        return $this->hasMany(ItemPenjualan::class,'produk_id');
+        return $this->belongsTo(JenisProduk::class, 'jenis_produk_id');
     }
 }

@@ -32,12 +32,12 @@ class JenisProdukController extends Controller
     {
         $request->validate([
             'nama_jenis' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
+           
         ]);
 
         JenisProduk::create([
             'nama_jenis' => $request->nama_jenis,
-            'keterangan' => $request->keterangan,
+           
         ]);
 
         return redirect()
@@ -60,12 +60,12 @@ class JenisProdukController extends Controller
     {
         $request->validate([
             'nama_jenis' => 'required|string|max:255',
-            'keterangan' => 'nullable|string',
+           
         ]);
 
         $jenisProduk->update([
             'nama_jenis' => $request->nama_jenis,
-            'keterangan' => $request->keterangan,
+          
         ]);
 
         return redirect()

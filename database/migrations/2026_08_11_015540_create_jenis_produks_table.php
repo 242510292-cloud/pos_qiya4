@@ -9,20 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('jenis_produks', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama_jenis');
-        $table->text('keterangan')->nullable();
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::table('produk', function (Blueprint $table) {
+            $table->foreignId('jenis_produk_id')
+                ->nullable()
+                ->constrained('jenis_produks')
+                ->nullOnDelete();
+        });
+    }
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_produks');
+        Schema::table('produk', function (Blueprint $table) {
+            $table->dropForeign(['jenis_produk_id']);
+            $table->dropColumn('jenis_produk_id');
+        });
     }
 };
